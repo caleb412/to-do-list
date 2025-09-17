@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+    <link
+      rel="stylesheet"
+      href="styles/node_modules/normalize.css/normalize.css"
+    />
+  </head>
+  <body>
+    <section class="title_section">
+      <h1 class="page_title">Список задач</h1>
+    </section>
+    <main>
+      <form class="add_task_form">
+        <label for="task_input"><h2>Новая задача</h2></label>
+        <input
+          type="textbox"
+          id="task_input"
+          placeholder="Название задачи..."
+        />
+        <button type="submit" class="submit_btn">+ Добавить</button>
+      </form>
+      <section class="taskboard">
+        <div class="column backlog">
+          <h3>Бэклог</h3>
+          <ul class="task-list">
+            <li class="task">Выучить JS</li>
+            <li class="task">Выучить React</li>
+            <li class="task">Сделать Домашку</li>
+          </ul>
+        </div>
+        <div class="column in-process">
+          <h3>В процессе</h3>
+          <ul class="task-list">
+            <li class="task in-process-task">Выпить смузи</li>
+            <li class="task in-process-task">Попить воды</li>
+          </ul>
+        </div>
+        <div class="column done">
+          <h3>Готово</h3>
+          <ul class="task-list">
+            <li class="task done-task">Позвонить маме</li>
+            <li class="task dont-task">Погладить кота</li>
+          </ul>
+        </div>
+        <div class="column bin">
+          <h3>Корзина</h3>
+          <ul class="task-list">
+            <li class="task bin-task">Сходить погулять</li>
+            <li class="task bin-task">Прочитать Войну и мир</li>
+          </ul>
+          <button class="clear_btn">🗙 Очистить</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
