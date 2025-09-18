@@ -1,0 +1,124 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background-color: rgb(200, 236, 248);
+}
+.title_section {
+  display: flex;
+  padding: 0;
+  background-color: rgb(4, 109, 237);
+  font-size: 1rem;
+  color: white;
+}
+.page_title {
+  padding-left: 3rem;
+}
+.add_task_form {
+  padding: 10px;
+  margin-top: 3rem;
+  margin-left: 3rem;
+  background-color: white;
+  width: 20rem;
+  border-radius: 1rem;
+}
+#task_input {
+  font-style: italic;
+  text-align: left;
+  font-size: 12px;
+  width: 10rem;
+  padding: 10px 10px;
+  border-radius: 5px solid black;
+}
+.submit_btn {
+  margin-left: 20px;
+  background-color: rgb(4, 109, 237);
+  color: white;
+  border-radius: 5px;
+  border-color: rgb(4, 109, 237);
+  text-align: center;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.taskboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 3rem;
+}
+.column {
+  align-items: top;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.column.backlog h3 {
+  text-align: center;
+  background: #acaeaf;
+  color: rgb(105, 106, 107);
+  padding: 5px;
+  margin-top: 0px;
+  border-radius: 5px;
+}
+.column.in-process h3 {
+  text-align: center;
+  background: #69a4e2;
+  color: #1d4d80;
+  padding: 5px;
+  margin-top: 0px;
+  border-radius: 5px;
+}
+.column.done h3 {
+  text-align: center;
+  background: #82d4a1;
+  color: #4eb174;
+  padding: 5px;
+  margin-top: 0px;
+  border-radius: 5px;
+}
+.column.bin h3 {
+  text-align: center;
+  background: #e86c8d;
+  color: #b34b67;
+  padding: 5px;
+  margin-top: 0px;
+  border-radius: 5px;
+}
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12px;
+}
+.task {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  padding: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.backlog li {
+  border-left: 5px solid #acaeaf;
+}
+.in-process li {
+  border-left: 5px solid #69a4e2;
+}
+.done li {
+  border-left: 5px solid #82d4a1;
+}
+.bin li {
+  border-left: 5px solid #e86c8d;
+}
+.clear_btn {
+  margin-top: auto;
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
