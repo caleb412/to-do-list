@@ -3,7 +3,7 @@ body {
   margin: 0;
   background-color: rgb(200, 236, 248);
 }
-.title-section {
+.title_section {
   display: flex;
   padding: 0;
   background-color: rgb(4, 109, 237);
