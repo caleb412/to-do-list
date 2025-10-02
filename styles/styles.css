@@ -39,6 +39,7 @@ body {
   padding: 8px 10px;
   cursor: pointer;
 }
+/* TASKBOARD STYLES */
 .taskboard {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -94,6 +95,7 @@ body {
   gap: 10px;
   font-size: 12px;
 }
+/* TASK CSS */
 .task {
   background: white;
   border: 1px solid #ddd;
@@ -113,6 +115,36 @@ body {
 .bin li {
   border-left: 5px solid #e86c8d;
 }
+
+/* EMPTY TASK CSS */
+.empty-task {
+  background: rgb(200, 236, 248);
+  border-radius: 0.5rem;
+  padding: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.backlog .empty-task {
+  border: 5px solid #acaeaf;
+  color: #acaeaf;
+}
+
+.in-process .empty-task {
+  border: 5px solid #69a4e2;
+  color: #69a4e2;
+}
+
+.done .empty-task {
+  border: 5px solid #82d4a1;
+  color: #82d4a1;
+}
+
+.bin .empty-task {
+  border: 5px solid #e86c8d;
+  color: #e86c8d;
+}
+
+/* CLEAR BUTTON */
 .clear_btn {
   margin-top: 10px;
   background: #dc3545;

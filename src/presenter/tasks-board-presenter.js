@@ -5,6 +5,7 @@ import TaskComponent from "../view/task-component.js";
 import { Status, StatusLabel } from "../const.js";
 import { render } from "../framework/render.js";
 import ButtonComponent from "../view/button-component.js";
+import EmptyTaskComponent from "../view/empty-task-component.js";
 
 export default class TasksBoardPresenter {
   #boardContainer = null;
