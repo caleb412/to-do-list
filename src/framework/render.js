@@ -1,4 +1,4 @@
-import { AbstractComponent } from "./view/abstract-component";
+import { AbstractComponent } from "./view/abstract-component.js";
 
 const RenderPosition = {
   BEFOREBEGIN: "beforebegin",
@@ -21,7 +21,7 @@ function render(component, container, place = RenderPosition.BEFOREEND) {
   if (container === null) {
     throw new Error("Container element does not exist");
   }
-  container.insertAdjacentElement(place, component.getElement());
+  container.insertAdjacentElement(place, component.element);
 }
 
 export { RenderPosition, createElement, render };

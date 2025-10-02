@@ -9,9 +9,10 @@ function createTaskComponentTemplate(task) {
 
 export default class TaskComponent extends AbstractComponent {
   constructor({ task }) {
+    super();
     this.task = task;
   }
-  getTemplate() {
+  get template() {
     return createTaskComponentTemplate(this.task);
   }
 }

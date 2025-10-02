@@ -11,14 +11,16 @@ export default class TasksBoardPresenter {
   #tasksModel = null;
 
   #tasksBoardComponent = new TaskboardComponent();
+
   #boardTasks = [];
 
   constructor({ boardContainer, tasksModel }) {
     this.#boardContainer = boardContainer;
     this.#tasksModel = tasksModel;
   }
+
   init() {
-    this.boardTasks = [...this.#tasksModel.getTasks()];
+    this.#boardTasks = [...this.#tasksModel.tasks];
     render(this.#tasksBoardComponent, this.#boardContainer);
 
     const statusValues = Object.values(Status);
@@ -27,21 +29,24 @@ export default class TasksBoardPresenter {
       const columnComponent = new ColumnComponent(status, StatusLabel[status]);
       const listComponent = new ListComponent();
 
-      render(columnComponent, this.#tasksBoardComponent.getElement());
-      render(listComponent, columnComponent.getElement());
+      render(columnComponent, this.#tasksBoardComponent.element);
+      render(listComponent, columnComponent.element);
 
       if (status === Status.BASKET) {
         const clearButtonComponent = new ButtonComponent();
-        render(clearButtonComponent, columnComponent.getElement());
+        render(clearButtonComponent, columnComponent.element);
       }
 
-      const tasksWithStatus = this.boardTasks.filter(
+      const tasksWithStatus = this.#boardTasks.filter(
         (task) => task.status === status
       );
       tasksWithStatus.forEach((task) => {
-        const taskComponent = new TaskComponent({ task });
-        render(taskComponent, listComponent.getElement());
+        this.#renderTask(task, listComponent.element);
       });
     });
+  }
+  #renderTask(task, container) {
+    const taskComponent = new TaskComponent({ task });
+    render(taskComponent, container);
   }
 }

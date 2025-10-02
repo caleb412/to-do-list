@@ -5,7 +5,7 @@ function createButtonComponentTemplate() {
 }
 
 export default class ButtonComponent extends AbstractComponent {
-  getTemplate() {
+  get template() {
     return createButtonComponentTemplate();
   }
 }

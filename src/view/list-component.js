@@ -7,7 +7,7 @@ function createListComponentTemplate() {
 }
 
 export default class ListComponent extends AbstractComponent {
-  getTemplate() {
+  get template() {
     return createListComponentTemplate();
   }
 }

@@ -1,4 +1,4 @@
-import { AbstractComponent } from "../framework/view/abstract-component";
+import { AbstractComponent } from "../framework/view/abstract-component.js";
 
 function createColumnComponentTemplate(status, statusLabel) {
   return `<div class="column ${status}">
@@ -11,10 +11,11 @@ export default class ColumnComponent extends AbstractComponent {
   #statusLabel = null;
 
   constructor(status, statusLabel) {
+    super();
     this.#status = status;
     this.#statusLabel = statusLabel;
   }
-  getTemplate() {
+  get template() {
     return createColumnComponentTemplate(this.#status, this.#statusLabel);
   }
 }

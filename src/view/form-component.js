@@ -13,7 +13,7 @@ function createFormComponentTemplate() {
 }
 
 export default class FormComponent extends AbstractComponent {
-  getTemplate() {
+  get template() {
     return createFormComponentTemplate();
   }
 }
