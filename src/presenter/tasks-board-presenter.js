@@ -26,28 +26,42 @@ export default class TasksBoardPresenter {
 
     const statusValues = Object.values(Status);
 
+    this.#renderTaskList(statusValues);
+  }
+  #renderTask(task, container) {
+    const taskComponent = new TaskComponent({ task });
+    render(taskComponent, container);
+  }
+
+  #renderTaskList(statusValues) {
     statusValues.forEach((status) => {
       const columnComponent = new ColumnComponent(status, StatusLabel[status]);
       const listComponent = new ListComponent();
 
       render(columnComponent, this.#tasksBoardComponent.element);
       render(listComponent, columnComponent.element);
-
       if (status === Status.BASKET) {
-        const clearButtonComponent = new ButtonComponent();
-        render(clearButtonComponent, columnComponent.element);
+        this.#renderClearButton(columnComponent.element);
       }
 
       const tasksWithStatus = this.#boardTasks.filter(
         (task) => task.status === status
       );
-      tasksWithStatus.forEach((task) => {
-        this.#renderTask(task, listComponent.element);
-      });
+      if (tasksWithStatus.length === 0) {
+        this.#renderEmptyTaskComponent(listComponent.element);
+      } else {
+        tasksWithStatus.forEach((task) => {
+          this.#renderTask(task, listComponent.element);
+        });
+      }
     });
   }
-  #renderTask(task, container) {
-    const taskComponent = new TaskComponent({ task });
-    render(taskComponent, container);
+  #renderClearButton(container) {
+    const clearButtonComponent = new ButtonComponent();
+    render(clearButtonComponent, container);
+  }
+  #renderEmptyTaskComponent(container) {
+    const emptyTaskComponent = new EmptyTaskComponent();
+    render(emptyTaskComponent, container);
   }
 }
