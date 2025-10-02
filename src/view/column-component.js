@@ -1,14 +1,14 @@
-import { createElement } from "../framework/render.js";
+import { AbstractComponent } from "../framework/view/abstract-component";
+
 function createColumnComponentTemplate(status, statusLabel) {
   return `<div class="column ${status}">
           <h3>${statusLabel}</h3>        
         </div>`;
 }
 
-export default class ColumnComponent {
+export default class ColumnComponent extends AbstractComponent {
   #status = null;
   #statusLabel = null;
-  #element = null;
 
   constructor(status, statusLabel) {
     this.#status = status;
@@ -16,17 +16,5 @@ export default class ColumnComponent {
   }
   getTemplate() {
     return createColumnComponentTemplate(this.#status, this.#statusLabel);
-  }
-
-  getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate());
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

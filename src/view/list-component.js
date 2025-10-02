@@ -1,4 +1,4 @@
-import { createElement } from "../framework/render.js";
+import { AbstractComponent } from "../framework/view/abstract-component.js";
 
 function createListComponentTemplate() {
   return `
@@ -6,20 +6,8 @@ function createListComponentTemplate() {
           </ul>`;
 }
 
-export default class ListComponent {
+export default class ListComponent extends AbstractComponent {
   getTemplate() {
     return createListComponentTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
