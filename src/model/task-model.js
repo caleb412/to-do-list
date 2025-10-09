@@ -1,5 +1,5 @@
 import { tasks } from "../mock/task.js";
-
+import { generateID } from "../utils.js";
 export default class TasksModel {
   #boardtasks = tasks;
   #observers = [];
@@ -16,7 +16,7 @@ export default class TasksModel {
     const newTask = {
       title,
       status: "backlog",
-      id: generateId(),
+      id: generateID(),
     };
     this.#boardtasks.push(newTask);
     this._notifyObservers();

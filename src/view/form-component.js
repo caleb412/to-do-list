@@ -8,7 +8,7 @@ function createFormComponentTemplate() {
           id="task_input"
           placeholder="Название задачи..."
         />
-            <button type="submit" class="submit_btn">+ Добавить</button>
+        <button type="submit" class="submit_btn">+ Добавить</button>
       </form>`;
 }
 
@@ -25,5 +25,6 @@ export default class FormComponent extends AbstractComponent {
   #clickHandler = (evt) => {
     evt.preventDefault();
     this.#handleClick();
+    // console.log("Clicked");
   };
 }

@@ -6,7 +6,6 @@ import { Status, StatusLabel } from "../const.js";
 import { render } from "../framework/render.js";
 import ButtonComponent from "../view/button-component.js";
 import EmptyTaskComponent from "../view/empty-task-component.js";
-
 export default class TasksBoardPresenter {
   #boardContainer = null;
   #tasksModel = null;
@@ -18,13 +17,15 @@ export default class TasksBoardPresenter {
   constructor({ boardContainer, tasksModel }) {
     this.#boardContainer = boardContainer;
     this.#tasksModel = tasksModel;
-
     this.#tasksModel.addObserver(this.#handleModelChange.bind(this));
+  }
+  get tasks() {
+    return this.#tasksModel.tasks;
   }
 
   init() {
     this.#boardTasks = [...this.#tasksModel.tasks];
-    render(this.#tasksBoardComponent, this.#boardContainer);
+    this.#renderBoard();
 
     const statusValues = Object.values(Status);
 
@@ -33,6 +34,9 @@ export default class TasksBoardPresenter {
   #renderTask(task, container) {
     const taskComponent = new TaskComponent({ task });
     render(taskComponent, container);
+  }
+  #renderBoard() {
+    render(this.#tasksBoardComponent, this.#boardContainer);
   }
 
   #renderTaskList(statusValues) {
@@ -46,9 +50,8 @@ export default class TasksBoardPresenter {
         this.#renderClearButton(columnComponent.element);
       }
 
-      const tasksWithStatus = this.#boardTasks.filter(
-        (task) => task.status === status
-      );
+      const tasksWithStatus = this.#tasksModel.getTasksByStatus(status);
+
       if (tasksWithStatus.length === 0) {
         this.#renderEmptyTaskComponent(listComponent.element);
       } else {
@@ -76,7 +79,7 @@ export default class TasksBoardPresenter {
   }
   #handleModelChange() {
     this.#clearBoard();
-    this.#renderTaskList();
+    this.init();
   }
   #clearBoard() {
     this.#tasksBoardComponent.element.innerHTML = "";
