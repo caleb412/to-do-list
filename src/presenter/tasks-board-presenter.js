@@ -64,4 +64,12 @@ export default class TasksBoardPresenter {
     const emptyTaskComponent = new EmptyTaskComponent();
     render(emptyTaskComponent, container);
   }
+  createTask() {
+    const taskTitle = document.querySelector("#task_input").value.trim();
+    if (!taskTitle) {
+      return;
+    }
+    this.#tasksModel.addTask(taskTitle);
+    document.querySelector("#task_input").value = "";
+  }
 }
