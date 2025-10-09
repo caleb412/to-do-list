@@ -18,6 +18,8 @@ export default class TasksBoardPresenter {
   constructor({ boardContainer, tasksModel }) {
     this.#boardContainer = boardContainer;
     this.#tasksModel = tasksModel;
+
+    this.#tasksModel.addObserver(this.#handleModelChange.bind(this));
   }
 
   init() {
@@ -71,5 +73,12 @@ export default class TasksBoardPresenter {
     }
     this.#tasksModel.addTask(taskTitle);
     document.querySelector("#task_input").value = "";
+  }
+  #handleModelChange() {
+    this.#clearBoard();
+    this.#renderTaskList();
+  }
+  #clearBoard() {
+    this.#tasksBoardComponent.element.innerHTML = "";
   }
 }
