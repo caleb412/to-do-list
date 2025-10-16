@@ -6,7 +6,6 @@ import { Status, StatusLabel } from "../const.js";
 import { render } from "../framework/render.js";
 import ButtonComponent from "../view/button-component.js";
 import EmptyTaskComponent from "../view/empty-task-component.js";
-
 export default class TasksBoardPresenter {
   #boardContainer = null;
   #tasksModel = null;
@@ -18,11 +17,15 @@ export default class TasksBoardPresenter {
   constructor({ boardContainer, tasksModel }) {
     this.#boardContainer = boardContainer;
     this.#tasksModel = tasksModel;
+    this.#tasksModel.addObserver(this.#handleModelChange.bind(this));
+  }
+  get tasks() {
+    return this.#tasksModel.tasks;
   }
 
   init() {
     this.#boardTasks = [...this.#tasksModel.tasks];
-    render(this.#tasksBoardComponent, this.#boardContainer);
+    this.#renderBoard();
 
     const statusValues = Object.values(Status);
 
@@ -31,6 +34,9 @@ export default class TasksBoardPresenter {
   #renderTask(task, container) {
     const taskComponent = new TaskComponent({ task });
     render(taskComponent, container);
+  }
+  #renderBoard() {
+    render(this.#tasksBoardComponent, this.#boardContainer);
   }
 
   #renderTaskList(statusValues) {
@@ -44,9 +50,8 @@ export default class TasksBoardPresenter {
         this.#renderClearButton(columnComponent.element);
       }
 
-      const tasksWithStatus = this.#boardTasks.filter(
-        (task) => task.status === status
-      );
+      const tasksWithStatus = this.#tasksModel.getTasksByStatus(status);
+
       if (tasksWithStatus.length === 0) {
         this.#renderEmptyTaskComponent(listComponent.element);
       } else {
@@ -57,11 +62,59 @@ export default class TasksBoardPresenter {
     });
   }
   #renderClearButton(container) {
-    const clearButtonComponent = new ButtonComponent();
+    const clearButtonComponent = new ButtonComponent({
+      onClick: this.#handleClearBinClick.bind(this),
+    });
     render(clearButtonComponent, container);
+    clearButtonComponent.setClickHandler(this.#handleClearBinClick.bind(this));
   }
   #renderEmptyTaskComponent(container) {
     const emptyTaskComponent = new EmptyTaskComponent();
     render(emptyTaskComponent, container);
+  }
+  createTask() {
+    const taskTitle = document.querySelector("#task_input").value.trim();
+    if (!taskTitle) {
+      return;
+    }
+    this.#tasksModel.addTask(taskTitle);
+    document.querySelector("#task_input").value = "";
+  }
+  #clearBin() {
+    const basketTasks = this.tasks.filter(
+      (task) => task.status === Status.BASKET
+    );
+    if (basketTasks.length === 0) {
+      return;
+    }
+    this.#tasksModel.removeTasksByStatus(Status.BASKET);
+  }
+  #handleClearBinClick() {
+    this.#clearBin();
+  }
+  #updateClearButton() {
+    const basketTasks = this.tasks.filter(
+      (task) => task.status === Status.BASKET
+    );
+    const clearButtons = document.querySelectorAll(".clear_btn");
+
+    clearButtons.forEach((button) => {
+      if (basketTasks.length === 0) {
+        button.disabled = true;
+        button.classList.add("clear_btn--disabled");
+      } else {
+        button.disabled = false;
+        button.classList.remove("clear_btn--disabled");
+      }
+    });
+  }
+
+  #handleModelChange() {
+    this.#clearBoard();
+    this.init();
+    this.#updateClearButton();
+  }
+  #clearBoard() {
+    this.#tasksBoardComponent.element.innerHTML = "";
   }
 }

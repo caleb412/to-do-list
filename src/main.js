@@ -9,12 +9,17 @@ const bodyContainer = document.querySelector(".title-section");
 const formContainer = document.querySelector(".form-section");
 const taskBoardContainer = document.querySelector(".taskboard-section");
 
+const formComponent = new FormComponent({ onClick: handleNewTaskButtonClick });
+
+function handleNewTaskButtonClick() {
+  taskBoardPresenter.createTask();
+}
 const tasksModel = new TasksModel();
 const taskBoardPresenter = new TasksBoardPresenter({
   boardContainer: taskBoardContainer,
   tasksModel,
 });
 render(new HeaderComponent(), bodyContainer, RenderPosition.AFTERBEGIN);
-render(new FormComponent(), formContainer, RenderPosition.AFTERBEGIN);
+render(formComponent, formContainer, RenderPosition.AFTERBEGIN);
 
 taskBoardPresenter.init();
