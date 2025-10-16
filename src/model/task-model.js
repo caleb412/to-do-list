@@ -37,4 +37,11 @@ export default class TasksModel {
   _notifyObservers() {
     this.#observers.forEach((observer) => observer());
   }
+  updateTaskStatus(taskId, newStatus) {
+    const task = this.#boardtasks.find((task) => task.id === taskId);
+    if (task) {
+      task.status = newStatus;
+      this._notifyObservers();
+    }
+  }
 }
