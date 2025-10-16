@@ -14,13 +14,18 @@ export default class ListComponent extends AbstractComponent {
     this.#setDropHandler(onTaskDrop);
   }
   get template() {
-    return createListComponentTemplate();
+    return createListComponentTemplate(this.status, this.label);
   }
   #setDropHandler(onTaskDrop) {
     const container = this.element;
 
     container.addEventListener("dragover", (event) => {
       event.preventDefault();
+    });
+    container.addEventListener("drop", (event) => {
+      event.preventDefault();
+      const taskId = event.dataTransfer.getData("text/plain");
+      onTaskDrop(taskId, this.status);
     });
   }
 }
