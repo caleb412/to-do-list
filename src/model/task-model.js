@@ -22,6 +22,12 @@ export default class TasksModel {
     this._notifyObservers();
     return newTask;
   }
+  removeTasksByStatus(status) {
+    this.#boardtasks = this.#boardtasks.filter(
+      (task) => task.status !== status
+    );
+    this._notifyObservers();
+  }
   addObserver(observer) {
     this.#observers.push(observer);
   }

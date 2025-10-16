@@ -5,17 +5,15 @@ function createButtonComponentTemplate() {
 }
 
 export default class ButtonComponent extends AbstractComponent {
-  #handleClick = null;
   constructor({ onClick }) {
     super();
-    this.#handleClick = onClick;
-    this.element.addEventListener(this.#clickHandler);
+    this._onClick = onClick;
   }
   get template() {
     return createButtonComponentTemplate();
   }
-  #clickHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleClick();
-  };
+  setClickHandler(callback) {
+    this._onClick = callback;
+    this.element.addEventListener("click", this._onClick);
+  }
 }

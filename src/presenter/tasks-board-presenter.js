@@ -62,8 +62,11 @@ export default class TasksBoardPresenter {
     });
   }
   #renderClearButton(container) {
-    const clearButtonComponent = new ButtonComponent();
+    const clearButtonComponent = new ButtonComponent({
+      onClick: this.#handleClearBinClick.bind(this),
+    });
     render(clearButtonComponent, container);
+    clearButtonComponent.setClickHandler(this.#handleClearBinClick.bind(this));
   }
   #renderEmptyTaskComponent(container) {
     const emptyTaskComponent = new EmptyTaskComponent();
@@ -77,9 +80,39 @@ export default class TasksBoardPresenter {
     this.#tasksModel.addTask(taskTitle);
     document.querySelector("#task_input").value = "";
   }
+  #clearBin() {
+    const basketTasks = this.tasks.filter(
+      (task) => task.status === Status.BASKET
+    );
+    if (basketTasks.length === 0) {
+      return;
+    }
+    this.#tasksModel.removeTasksByStatus(Status.BASKET);
+  }
+  #handleClearBinClick() {
+    this.#clearBin();
+  }
+  #updateClearButton() {
+    const basketTasks = this.tasks.filter(
+      (task) => task.status === Status.BASKET
+    );
+    const clearButtons = document.querySelectorAll(".clear_btn");
+
+    clearButtons.forEach((button) => {
+      if (basketTasks.length === 0) {
+        button.disabled = true;
+        button.classList.add("clear_btn--disabled");
+      } else {
+        button.disabled = false;
+        button.classList.remove("clear_btn--disabled");
+      }
+    });
+  }
+
   #handleModelChange() {
     this.#clearBoard();
     this.init();
+    this.#updateClearButton();
   }
   #clearBoard() {
     this.#tasksBoardComponent.element.innerHTML = "";
