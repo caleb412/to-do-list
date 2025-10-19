@@ -46,6 +46,7 @@ export default class TasksBoardPresenter {
         status: status,
         label: StatusLabel[status],
         onTaskDrop: this.#handleTaskDrop.bind(this),
+        onTaskReorder: this.#handleTaskReorder.bind(this),
       });
 
       render(columnComponent, this.#tasksBoardComponent.element);
@@ -123,5 +124,8 @@ export default class TasksBoardPresenter {
   }
   #handleTaskDrop(taskId, newStatus) {
     this.#tasksModel.updateTaskStatus(taskId, newStatus);
+  }
+  #handleTaskReorder(taskOrder, status) {
+    this.#tasksModel.reorderTasks(taskOrder, status);
   }
 }

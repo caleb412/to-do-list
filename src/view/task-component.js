@@ -1,9 +1,9 @@
 import { AbstractComponent } from "../framework/view/abstract-component.js";
 
 function createTaskComponentTemplate(task) {
-  const { title } = task;
+  const { title, id, status } = task;
   return `
-   <li class="task">${title}</li>
+   <li class="task" data-task-id="${id}" data-task-status=${status}">${title}</li>
   `;
 }
 
@@ -23,6 +23,7 @@ export default class TaskComponent extends AbstractComponent {
     this.element.setAttribute(`draggable`, true);
     this.element.addEventListener("dragstart", (event) => {
       event.dataTransfer.setData("text/plain", this.task.id);
+      event.dataTransfer.effectAllowed = "move";
     });
   }
 }
