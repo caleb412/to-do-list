@@ -44,11 +44,19 @@ export default class TasksModel extends Observable {
     this._notify(UpdateType.MAJOR);
   }
 
-  updateTaskStatus(taskId, newStatus) {
+  async updateTaskStatus(taskId, newStatus) {
     const task = this.#boardtasks.find((task) => task.id === taskId);
     if (task) {
       task.status = newStatus;
-      this._notify(UpdateType.INIT);
+      try {
+        const updatedTask = await this.#taskApiService.updateTask(task);
+        Object.assign(task, updatedTask);
+        this._notify(UserAction.UPDATE_TASK, task);
+      } catch (err) {
+        console.error("Ошибка при обновлении статусв задачи на сервер:", err);
+        task.status = previousStatus;
+        throw err;
+      }
     }
   }
   reorderTasks(taskIds, status) {
