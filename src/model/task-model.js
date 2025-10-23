@@ -4,6 +4,16 @@ export default class TasksModel {
   #boardtasks = tasks;
   #observers = [];
 
+  #taskApiService = null;
+  #boardtasks = [];
+
+  constructor({taskApiService}){
+    this.#taskApiService = taskApiService;
+    this.#taskApiService.tasks.then((tasks)=>{
+      console.log(tasks);
+    })
+  }
+
   get tasks() {
     return this.#boardtasks;
   }
