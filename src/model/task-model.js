@@ -77,4 +77,12 @@ export default class TasksModel {
     this.#boardtasks = [...otherTasks, ...finalReordered];
     this._notifyObservers();
   }
+  async init() {
+    try {
+      const tasks = await this.#taskApiService.tasks;
+      this.#boardtasks = tasks;
+    } catch (err) {
+      this.#boardtasks;
+    }
+  }
 }
