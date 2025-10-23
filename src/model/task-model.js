@@ -37,6 +37,34 @@ export default class TasksModel extends Observable {
       throw err;
     }
   }
+
+  deleteTask(taskId) {
+    this.#boardtasks = this.#boardtasks.filter((task) => task.id !== taskId);
+    this._notify(UserAction.DELETE_TASK, { id: taskId });
+  }
+
+  async clearBasketTasks() {
+    const basketTasks = this.#boardtasks.filter(
+      (task) => task.status === "bin"
+    );
+
+    try {
+      await Promise.all(
+        basketTasks.map((task) => this.#taskApiService.deleteTask(task.id))
+      );
+
+      this.#boardtasks = this.#boardtasks.filter(
+        (task) => task.status !== "bin"
+      );
+      this._notify(UserAction.DELETE_TASK, { status: "bin" });
+    } catch (err) {
+      console.error("Ошибка при удалении задачи из корзины на сервере:", err);
+      throw err;
+    }
+  }
+  hasBasketTasks() {
+    return this.#boardtasks.some((task) => task.status === "bin");
+  }
   removeTasksByStatus(status) {
     this.#boardtasks = this.#boardtasks.filter(
       (task) => task.status !== status

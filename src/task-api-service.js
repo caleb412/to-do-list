@@ -31,4 +31,10 @@ export default class TaskApiService extends ApiService {
 
     return parsedResponse;
   }
+  async deleteTask(taskId) {
+    await this._load({
+      url: `tasks/${taskId}`,
+      method: Method.DELETE,
+    });
+  }
 }
