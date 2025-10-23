@@ -42,7 +42,12 @@ export default class TasksBoardPresenter {
   #renderTaskList(statusValues) {
     statusValues.forEach((status) => {
       const columnComponent = new ColumnComponent(status, StatusLabel[status]);
-      const listComponent = new ListComponent();
+      const listComponent = new ListComponent({
+        status: status,
+        label: StatusLabel[status],
+        onTaskDrop: this.#handleTaskDrop.bind(this),
+        onTaskReorder: this.#handleTaskReorder.bind(this),
+      });
 
       render(columnComponent, this.#tasksBoardComponent.element);
       render(listComponent, columnComponent.element);
@@ -116,5 +121,11 @@ export default class TasksBoardPresenter {
   }
   #clearBoard() {
     this.#tasksBoardComponent.element.innerHTML = "";
+  }
+  #handleTaskDrop(taskId, newStatus) {
+    this.#tasksModel.updateTaskStatus(taskId, newStatus);
+  }
+  #handleTaskReorder(taskOrder, status) {
+    this.#tasksModel.reorderTasks(taskOrder, status);
   }
 }

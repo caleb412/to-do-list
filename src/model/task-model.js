@@ -37,4 +37,33 @@ export default class TasksModel {
   _notifyObservers() {
     this.#observers.forEach((observer) => observer());
   }
+  updateTaskStatus(taskId, newStatus) {
+    const task = this.#boardtasks.find((task) => task.id === taskId);
+    if (task) {
+      task.status = newStatus;
+      this._notifyObservers();
+    }
+  }
+  reorderTasks(taskIds, status) {
+    const taskIdSet = new Set(taskIds);
+
+    const reorderedTasks = [];
+    const otherTasks = [];
+
+    this.#boardtasks.forEach((task) => {
+      if (taskIdSet.has(task.id)) {
+        task.status = status;
+        reorderedTasks.push(task);
+      } else if (task.status !== status) {
+        otherTasks.push(task);
+      }
+    });
+
+    const finalReordered = taskIds
+      .map((id) => reorderedTasks.find((task) => task.id === id))
+      .filter((task) => task);
+
+    this.#boardtasks = [...otherTasks, ...finalReordered];
+    this._notifyObservers();
+  }
 }
