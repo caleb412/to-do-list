@@ -16,6 +16,9 @@ export default class ApiService {
       ApiService.catchError(err);
     }
   }
+  static parseResponse(response) {
+    return response.json();
+  }
 
   static checkStatus(response) {
     if (!response.ok) {
