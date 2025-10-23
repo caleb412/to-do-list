@@ -131,8 +131,12 @@ export default class TasksBoardPresenter {
   #clearBoard() {
     this.#tasksBoardComponent.element.innerHTML = "";
   }
-  #handleTaskDrop(taskId, newStatus) {
-    this.#tasksModel.updateTaskStatus(taskId, newStatus);
+  async #handleTaskDrop(taskId, newStatus) {
+    try {
+      await this.#tasksModel.updateTaskStatus(taskId, newStatus);
+    } catch (err) {
+      console.error("Ошибка при обновлении статуса задачи:", er);
+    }
   }
   #handleTaskReorder(taskOrder, status) {
     this.#tasksModel.reorderTasks(taskOrder, status);
