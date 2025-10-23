@@ -88,17 +88,13 @@ export default class TasksBoardPresenter {
     this.#tasksModel.addTask(taskTitle);
     document.querySelector("#task_input").value = "";
   }
-  #clearBin() {
-    const basketTasks = this.tasks.filter(
-      (task) => task.status === Status.BASKET
-    );
-    if (basketTasks.length === 0) {
-      return;
+
+  async #handleClearBinClick() {
+    try {
+      await this.#tasksModel.clearBasketTasks();
+    } catch (err) {
+      console.error("Ошибка при отчистке корзины:", err);
     }
-    this.#tasksModel.removeTasksByStatus(Status.BASKET);
-  }
-  #handleClearBinClick() {
-    this.#clearBin();
   }
   #updateClearButton() {
     const basketTasks = this.tasks.filter(
