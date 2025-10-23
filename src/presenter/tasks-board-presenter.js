@@ -23,7 +23,9 @@ export default class TasksBoardPresenter {
     return this.#tasksModel.tasks;
   }
 
-  init() {
+  async init() {
+    await this.#tasksModel.init();
+    this.#clearBoard();
     this.#boardTasks = [...this.#tasksModel.tasks];
     this.#renderBoard();
 
