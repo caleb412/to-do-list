@@ -6,6 +6,7 @@ import { Status, StatusLabel } from "../const.js";
 import { render } from "../framework/render.js";
 import ButtonComponent from "../view/button-component.js";
 import EmptyTaskComponent from "../view/empty-task-component.js";
+import { UserAction } from "../const.js";
 export default class TasksBoardPresenter {
   #boardContainer = null;
   #tasksModel = null;
@@ -116,10 +117,16 @@ export default class TasksBoardPresenter {
     });
   }
 
-  #handleModelChange() {
-    this.#clearBoard();
-    this.init();
-    this.#updateClearButton();
+  #handleModelChange(event, payload) {
+    switch (event) {
+      case UserAction.ADD_TASK:
+      case UserAction.UPDATE_TASK:
+      case UserAction.DELETE_TASK:
+        this.#clearBoard();
+        this.init();
+        this.#updateClearButton();
+        break;
+    }
   }
   #clearBoard() {
     this.#tasksBoardComponent.element.innerHTML = "";

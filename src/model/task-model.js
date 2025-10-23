@@ -22,28 +22,33 @@ export default class TasksModel extends Observable {
     return this.#boardtasks.filter((task) => task.status === status);
   }
 
-  addTask(title) {
+  async addTask(title) {
     const newTask = {
       title,
       status: "backlog",
       id: generateID(),
     };
-    this.#boardtasks.push(newTask);
-    this._notifyObservers();
-    return newTask;
+    try {
+      const createdTask = await this.#taskApiService.addTask(newTask);
+      this._notify(UserAction.ADD_TASK, createdTask);
+      return createdTask;
+    } catch (err) {
+      console.error("Ошибка при добавлении задачи на сервер:", err);
+      throw err;
+    }
   }
   removeTasksByStatus(status) {
     this.#boardtasks = this.#boardtasks.filter(
       (task) => task.status !== status
     );
-    this._notify(UpdateType.INIT);
+    this._notify(UpdateType.MAJOR);
   }
 
   updateTaskStatus(taskId, newStatus) {
     const task = this.#boardtasks.find((task) => task.id === taskId);
     if (task) {
       task.status = newStatus;
-      this._notify(UpdateType.MINOR);
+      this._notify(UpdateType.INIT);
     }
   }
   reorderTasks(taskIds, status) {
