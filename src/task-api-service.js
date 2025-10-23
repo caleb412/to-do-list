@@ -1,4 +1,4 @@
-import ApiService from "./framework/view/api-service";
+import ApiService from "./framework/view/api-service.js";
 
 const Method = {
   GET: "GET",
@@ -9,6 +9,6 @@ const Method = {
 
 export default class TaskApiService extends ApiService {
   get tasks() {
-    return this_load({ url: "tasks" }).then(ApiService.parseResponse);
+    return this._load({ url: "tasks" }).then(ApiService.parseResponse);
   }
 }

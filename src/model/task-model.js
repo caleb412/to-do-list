@@ -1,17 +1,18 @@
 import { tasks } from "../mock/task.js";
 import { generateID } from "../utils.js";
+
 export default class TasksModel {
-  #boardtasks = tasks;
+  // #boardtasks = tasks;
   #observers = [];
 
   #taskApiService = null;
   #boardtasks = [];
 
-  constructor({taskApiService}){
+  constructor({ taskApiService }) {
     this.#taskApiService = taskApiService;
-    this.#taskApiService.tasks.then((tasks)=>{
+    this.#taskApiService.tasks.then((tasks) => {
       console.log(tasks);
-    })
+    });
   }
 
   get tasks() {
