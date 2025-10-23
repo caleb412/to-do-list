@@ -1,14 +1,13 @@
-import { tasks } from "../mock/task.js";
+import Observable from "../framework/observable.js";
+import { UpdateType, UserAction } from "../const.js";
 import { generateID } from "../utils.js";
 
-export default class TasksModel {
-  // #boardtasks = tasks;
-  #observers = [];
-
+export default class TasksModel extends Observable {
   #taskApiService = null;
   #boardtasks = [];
 
   constructor({ taskApiService }) {
+    super();
     this.#taskApiService = taskApiService;
     this.#taskApiService.tasks.then((tasks) => {
       console.log(tasks);
@@ -37,22 +36,14 @@ export default class TasksModel {
     this.#boardtasks = this.#boardtasks.filter(
       (task) => task.status !== status
     );
-    this._notifyObservers();
+    this._notify(UpdateType.INIT);
   }
-  addObserver(observer) {
-    this.#observers.push(observer);
-  }
-  removeObserver(observer) {
-    this.#observers = this.#observers.filter((obs) => obs !== observer);
-  }
-  _notifyObservers() {
-    this.#observers.forEach((observer) => observer());
-  }
+
   updateTaskStatus(taskId, newStatus) {
     const task = this.#boardtasks.find((task) => task.id === taskId);
     if (task) {
       task.status = newStatus;
-      this._notifyObservers();
+      this._notify(UpdateType.MINOR);
     }
   }
   reorderTasks(taskIds, status) {
@@ -75,7 +66,7 @@ export default class TasksModel {
       .filter((task) => task);
 
     this.#boardtasks = [...otherTasks, ...finalReordered];
-    this._notifyObservers();
+    this._notify(UpdateType.INIT);
   }
   async init() {
     try {
@@ -84,5 +75,6 @@ export default class TasksModel {
     } catch (err) {
       this.#boardtasks;
     }
+    this._notify(UpdateType.INIT);
   }
 }
