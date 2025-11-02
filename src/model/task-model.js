@@ -1,8 +1,18 @@
-import { tasks } from "../mock/task.js";
+import Observable from "../framework/observable.js";
+import { UpdateType, UserAction } from "../const.js";
 import { generateID } from "../utils.js";
-export default class TasksModel {
-  #boardtasks = tasks;
-  #observers = [];
+
+export default class TasksModel extends Observable {
+  #taskApiService = null;
+  #boardtasks = [];
+
+  constructor({ taskApiService }) {
+    super();
+    this.#taskApiService = taskApiService;
+    this.#taskApiService.tasks.then((tasks) => {
+      console.log(tasks);
+    });
+  }
 
   get tasks() {
     return this.#boardtasks;
@@ -12,36 +22,69 @@ export default class TasksModel {
     return this.#boardtasks.filter((task) => task.status === status);
   }
 
-  addTask(title) {
+  async addTask(title) {
     const newTask = {
       title,
       status: "backlog",
       id: generateID(),
     };
-    this.#boardtasks.push(newTask);
-    this._notifyObservers();
-    return newTask;
+    try {
+      const createdTask = await this.#taskApiService.addTask(newTask);
+      this._notify(UserAction.ADD_TASK, createdTask);
+      return createdTask;
+    } catch (err) {
+      console.error("Ошибка при добавлении задачи на сервер:", err);
+      throw err;
+    }
+  }
+
+  deleteTask(taskId) {
+    this.#boardtasks = this.#boardtasks.filter((task) => task.id !== taskId);
+    this._notify(UserAction.DELETE_TASK, { id: taskId });
+  }
+
+  async clearBasketTasks() {
+    const basketTasks = this.#boardtasks.filter(
+      (task) => task.status === "bin"
+    );
+
+    try {
+      await Promise.all(
+        basketTasks.map((task) => this.#taskApiService.deleteTask(task.id))
+      );
+
+      this.#boardtasks = this.#boardtasks.filter(
+        (task) => task.status !== "bin"
+      );
+      this._notify(UserAction.DELETE_TASK, { status: "bin" });
+    } catch (err) {
+      console.error("Ошибка при удалении задачи из корзины на сервере:", err);
+      throw err;
+    }
+  }
+  hasBasketTasks() {
+    return this.#boardtasks.some((task) => task.status === "bin");
   }
   removeTasksByStatus(status) {
     this.#boardtasks = this.#boardtasks.filter(
       (task) => task.status !== status
     );
-    this._notifyObservers();
+    this._notify(UpdateType.MAJOR);
   }
-  addObserver(observer) {
-    this.#observers.push(observer);
-  }
-  removeObserver(observer) {
-    this.#observers = this.#observers.filter((obs) => obs !== observer);
-  }
-  _notifyObservers() {
-    this.#observers.forEach((observer) => observer());
-  }
-  updateTaskStatus(taskId, newStatus) {
+
+  async updateTaskStatus(taskId, newStatus) {
     const task = this.#boardtasks.find((task) => task.id === taskId);
     if (task) {
       task.status = newStatus;
-      this._notifyObservers();
+      try {
+        const updatedTask = await this.#taskApiService.updateTask(task);
+        Object.assign(task, updatedTask);
+        this._notify(UserAction.UPDATE_TASK, task);
+      } catch (err) {
+        console.error("Ошибка при обновлении статусв задачи на сервер:", err);
+        task.status = previousStatus;
+        throw err;
+      }
     }
   }
   reorderTasks(taskIds, status) {
@@ -64,6 +107,15 @@ export default class TasksModel {
       .filter((task) => task);
 
     this.#boardtasks = [...otherTasks, ...finalReordered];
-    this._notifyObservers();
+    this._notify(UpdateType.INIT);
+  }
+  async init() {
+    try {
+      const tasks = await this.#taskApiService.tasks;
+      this.#boardtasks = tasks;
+    } catch (err) {
+      this.#boardtasks;
+    }
+    this._notify(UpdateType.INIT);
   }
 }
