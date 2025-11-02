@@ -6,12 +6,17 @@ import { Status, StatusLabel } from "../const.js";
 import { render } from "../framework/render.js";
 import ButtonComponent from "../view/button-component.js";
 import EmptyTaskComponent from "../view/empty-task-component.js";
+import LoadingViewComponent from "../view/loading-view-component.js";
 import { UserAction } from "../const.js";
 export default class TasksBoardPresenter {
   #boardContainer = null;
   #tasksModel = null;
+  #resetButtonComponent = new ButtonComponent({
+    onClick: this.#handleClearBinClick.bind(this),
+  });
 
   #tasksBoardComponent = new TaskboardComponent();
+  #loadingComponent = new LoadingViewComponent();
 
   #boardTasks = [];
 
@@ -25,7 +30,9 @@ export default class TasksBoardPresenter {
   }
 
   async init() {
+    this.#renderLoading();
     await this.#tasksModel.init();
+    this.#removeLoading();
     this.#clearBoard();
     this.#boardTasks = [...this.#tasksModel.tasks];
     this.#renderBoard();
@@ -34,6 +41,7 @@ export default class TasksBoardPresenter {
 
     this.#renderTaskList(statusValues);
   }
+
   #renderTask(task, container) {
     const taskComponent = new TaskComponent({ task });
     render(taskComponent, container);
@@ -70,11 +78,10 @@ export default class TasksBoardPresenter {
     });
   }
   #renderClearButton(container) {
-    const clearButtonComponent = new ButtonComponent({
-      onClick: this.#handleClearBinClick.bind(this),
-    });
-    render(clearButtonComponent, container);
-    clearButtonComponent.setClickHandler(this.#handleClearBinClick.bind(this));
+    render(this.#resetButtonComponent, container);
+    this.#resetButtonComponent.setClickHandler(
+      this.#handleClearBinClick.bind(this)
+    );
   }
   #renderEmptyTaskComponent(container) {
     const emptyTaskComponent = new EmptyTaskComponent();
@@ -97,20 +104,15 @@ export default class TasksBoardPresenter {
     }
   }
   #updateClearButton() {
-    const basketTasks = this.tasks.filter(
-      (task) => task.status === Status.BASKET
-    );
-    const clearButtons = document.querySelectorAll(".clear_btn");
+    const clearButton = document.querySelector(".clear_btn");
 
-    clearButtons.forEach((button) => {
-      if (basketTasks.length === 0) {
-        button.disabled = true;
-        button.classList.add("clear_btn--disabled");
-      } else {
-        button.disabled = false;
-        button.classList.remove("clear_btn--disabled");
-      }
-    });
+    if (this.#tasksModel.hasBasketTasks()) {
+      clearButton.disabled = false;
+      clearButton.classList.remove("clear_btn--disabled");
+    } else {
+      clearButton.disabled = true;
+      clearButton.classList.add("clear_btn--disabled");
+    }
   }
 
   #handleModelChange(event, payload) {
@@ -124,6 +126,20 @@ export default class TasksBoardPresenter {
         break;
     }
   }
+  #renderLoading() {
+    render(this.#loadingComponent, this.#boardContainer);
+  }
+
+  #removeLoading() {
+    if (
+      this.#loadingComponent.element &&
+      this.#loadingComponent.element.parentNode
+    ) {
+      this.#loadingComponent.element.remove();
+      this.#loadingComponent.removeElement();
+    }
+  }
+
   #clearBoard() {
     this.#tasksBoardComponent.element.innerHTML = "";
   }
